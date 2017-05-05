@@ -1,0 +1,6 @@
+module.exports = {
+  redirects: {
+    'bbc': "http://www.bbc.co.uk/"
+  },
+  defaultRedirect: "http://www.google.com/"
+}
