@@ -1,22 +1,30 @@
 var http = require('http');
-var path = require('path');
 var express = require('express');
-var compress = require('compression');
+var morgan = require('morgan');
+var fs = require('fs');
+var path = require('path');
+var rfs = require('rotating-file-stream');
+
 var app = express();
-var port = process.env.PORT || 9000;
 
-var config = require('./config');
+const logDirectory = path.join(__dirname, 'log')
+const port = process.env.PORT || 9000;
+const config = require('./config');
 
-app.use(compress());
-app.use(express.static(__dirname + '/dist'));
-app.set('views', path.join(__dirname, '/dist'));
-app.set('view engine', 'jade');
+fs.existsSync(logDirectory) || fs.mkdirSync(logDirectory);
+
+var accessLogStream = rfs('access.log', {
+  interval: '1d',
+  path: logDirectory
+});
+
+app.use(morgan('tiny'));
+app.use(morgan('combined', {stream: accessLogStream}));
 
 // Load routes
 for (let [key, value] of Object.entries(config.redirects)) {  
   app.get('/'+key, function(req, res) {
-    console.log(req);
-    res.redirect(value)
+    res.redirect(value);
   });
 }
 
