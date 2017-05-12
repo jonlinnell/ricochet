@@ -30,7 +30,7 @@ app.use(morgan(':real-ip - :remote-user [:date[clf]] ":method :url HTTP/:http-ve
 for (let [key, value] of Object.entries(config.redirects)) {
   app.get('/' + key, (req, res) => {
     res.redirect(value);
-  });fskdjfhskdjhf
+  });
 }
 
 // Default redirect for everything else
