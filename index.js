@@ -4,7 +4,7 @@ var morgan = require('morgan');
 var fs = require('fs');
 var path = require('path');
 var rfs = require('rotating-file-stream');
-var colours = require('colors'); // eslint-disable-line no-unused-vars
+require('colors');
 
 var app = express();
 
