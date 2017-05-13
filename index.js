@@ -9,13 +9,12 @@ require('colors');
 var app = express();
 
 const config = require('./config');
+const urls = require('./urls');
 
-const logDirectory = path.join(__dirname, 'log');
 const port = process.env.PORT || 9000;
+const logDirectory = path.join(__dirname, 'log');
 
 fs.existsSync(logDirectory) || fs.mkdirSync(logDirectory);
-
-morgan.token('real-ip', (req, res) => { return req.headers['x-real-ip']; }); // eslint-disable-line no-unused-vars
 
 var accessLogStream = rfs('access.log', {
   interval: config.logInterval,
@@ -23,11 +22,12 @@ var accessLogStream = rfs('access.log', {
   path: logDirectory
 });
 
+morgan.token('real-ip', (req, res) => { return req.headers['x-real-ip']; }); // eslint-disable-line no-unused-vars
 app.use(morgan('[:date[web]] ' + ':real-ip'.blue + '\t:url'.green));
 app.use(morgan(':real-ip - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent"', {stream: accessLogStream}));
 
 // Load redirects from config
-for (let [key, value] of Object.entries(config.redirects)) {
+for (let [key, value] of Object.entries(urls.urls)) {
   app.get('/' + key, (req, res) => {
     res.redirect(value);
   });
@@ -35,7 +35,7 @@ for (let [key, value] of Object.entries(config.redirects)) {
 
 // Default redirect for everything else
 app.get('*', (req, res) => {
-  res.redirect(config.defaultRedirect);
+  res.redirect(urls.default);
 });
 
 http.createServer(app).listen(port, () => {
