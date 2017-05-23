@@ -10,16 +10,22 @@
     "express": "^4.15.2",
     "express-ls-routes": "^1.0.2",
     "fs": "^0.0.1-security",
+    "geoip-lite": "^1.2.1",
     "http": "^0.0.0",
     "husky": "^0.13.3",
     "morgan": "^1.8.1",
     "nodemon": "^1.11.0",
     "path": "^0.12.7",
-    "rotating-file-stream": "^1.2.2"
+    "request": "^2.81.0",
+    "rotating-file-stream": "^1.2.2",
+    "sequelize": "^3.30.4",
+    "sequelize-mysql": "^1.7.0",
+    "useragent": "^2.1.13",
+    "yamlparser": "^0.0.2"
   },
   "scripts": {
     "start": "nodemon index.js",
-    "precommit": "./node_modules/eslint/bin/eslint.js *.js"
+    "precommit": "./node_modules/eslint/bin/eslint.js *.js */*.js"
   },
   "devDependencies": {
     "babel-eslint": "^6.1.2",

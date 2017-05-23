@@ -1,9 +1,0 @@
-module.exports = {
-  // List of redirects
-  urls: {
-    'bbc': 'http://www.bbc.co.uk/'
-  },
-
-  // Where to go if an unmatched URL is accessed
-  default: 'http://www.google.com/'
-};
