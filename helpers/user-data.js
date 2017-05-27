@@ -22,7 +22,11 @@ module.exports = {
             reject(error);
           });
       } else {
-        resolve(requestIp.getClientIp(req));
+        resolve({
+          geoip: geoip.lookup(requestIp.getClientIp(req)),
+          agent: useragent.parse(req.headers['user-agent']),
+          ip: requestIp.getClientIp(req)
+        });
       }
     });
   }

@@ -37,11 +37,6 @@ module.exports = {
         }
       })
       .catch(error => {
-        /* eslint-disable no-console */
-        console.log('===================================================='.red.bold);
-        console.log('=  ARE YOU RUNNING AS NODE_ENV=dev IN PRODUCTION?  ='.red.bold);
-        console.log('====================================================\n'.red.bold);
-        /* eslint-enable no-console */
         throw error;
       });
   }
