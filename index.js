@@ -1,12 +1,11 @@
-const http = require('http');
 const express = require('express');
+const http = require('http');
 const morgan = require('morgan');
-const path = require('path');
-const useragent = require('useragent');
-const geoip = require('geoip-lite');
 const Sequelize = require('sequelize');
+const userDataHelper = require('./helpers/user-data');
 require('colors');
-useragent(true);
+
+const hitCtrl = require('./controllers/hit.controller');
 
 var app = express();
 
@@ -14,52 +13,39 @@ const config = require('./config');
 const urls = require('./urls');
 
 const port = process.env.PORT || 9000;
+// const env = process.env.NODE_ENV || 'dev';
 
-const db = new Sequelize(config.db.dbase, config.db.user, config.db.pass);
-const Hit = db.import(path.resolve(__dirname, 'models/hit.model'));
+const db = new Sequelize(config.db.database, config.db.user, config.db.pass, {
+  host: config.db.host,
+  dialect: config.db.dialect,
+  port: config.db.port,
+  logging: process.env.NODE_ENV === 'dev' ? console.log : false
+});
+
+db
+  .authenticate()
+  .then(() => {
+    console.log('Database connection has been established successfully.'.green); // eslint-disable-line no-console
+  })
+  .catch(err => {
+    console.error(`Unable to connect to the database: ${err}`.red); // eslint-disable-line no-console
+  });
 
 morgan.token('real-ip', (req, res) => { return req.headers['x-real-ip']; }); // eslint-disable-line no-unused-vars
 app.use(morgan('[:date[web]] ' + ':real-ip'.blue + '\t:url'.green));
 
 // Load redirects from config
 for (let [key, value] of Object.entries(urls.urls)) {
-  app.get('/' + key, (req, res) => {
-    res.redirect(value);
-    const agent = useragent.parse(req.headers['user-agent']);
-    const ip = req.headers['x-real-ip'] || req.ip;
-    const ipData = geoip.lookup(ip);
-
-    db.sync({ loggine: console.log })
-      .then(() => Hit.create({
-        // id:
-        url: req.url,
-        date: Date.now(),
-        ip,
-        browserFamily: agent.family,
-        browserVersionMajor: agent.major,
-        browserVersionMinor: agent.minor,
-        browserVersionPatch: agent.patch,
-        deviceFamily: agent.device.family,
-        deviceVersionMajor: agent.device.major,
-        deviceVersionMinor: agent.device.minor,
-        deviceVersionPatch: agent.device.patch,
-        osFamily: agent.os.family,
-        osVersionMajor: agent.os.major,
-        osVersionMinor: agent.os.minor,
-        osVersionPatch: agent.os.patch,
-        country: ipData.country,
-        region: ipData.region,
-        city: ipData.city,
-        lat: ipData.ll[0],
-        lon: ipData.ll[1]
-      }))
-      .then(thisHit => {
-        console.log(thisHit.get({
-          plain: true
-        }));
+  app.get(`/${key}`, (req, res) => {
+    userDataHelper.get(req)
+      .then(hitUserData => {
+        hitCtrl.saveHit(db, req.url, hitUserData);
+      })
+      .then(() => {
+        res.redirect(value);
       })
       .catch(error => {
-        console.log(error);
+        res.send(error.red);
       });
   });
 }

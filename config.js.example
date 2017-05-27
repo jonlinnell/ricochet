@@ -1,13 +1,12 @@
 module.exports = {
-
-  // List of redirects
-  redirects: {
-    'bbc': 'http://www.bbc.co.uk/'
-  },
-
-  // Where to go if an unmatched URL is accessed
-  defaultRedirect: 'http://www.google.com/',
-
   // How often logs are rotated. E.g. '5s' (rotate every five seconds. Don't do this.) '15m' (every fifteen minutes), '18h' (every 18 hours), '7d' (every seven days)
-  logInterval: '7d'
+  logInterval: '7d',
+
+  // Database config
+  db: {
+  	host: 'localhost',
+  	database: 'ricochet',
+  	user: 'ricochet_user',
+  	pass: 'bounceme'
+  }
 };

@@ -1,12 +1,13 @@
 {
-  "name": "test",
-  "version": "1.0.0",
+  "name": "ricochet",
+  "version": "0.1.0",
+  "description": "Simple HTTP redirection engine with MySQL usage logging.",
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
+    "bluebird": "^3.5.0",
     "colors": "^1.1.2",
     "eslint": "^3.19.0",
-    "eslint-watch": "^3.1.0",
     "express": "^4.15.2",
     "express-ls-routes": "^1.0.2",
     "fs": "^0.0.1-security",
@@ -14,16 +15,23 @@
     "http": "^0.0.0",
     "husky": "^0.13.3",
     "morgan": "^1.8.1",
+    "mysql2": "^1.2.0",
     "nodemon": "^1.11.0",
     "path": "^0.12.7",
+    "public-ip": "^2.3.5",
     "request": "^2.81.0",
-    "rotating-file-stream": "^1.2.2",
+    "request-ip": "^2.0.1",
     "sequelize": "^3.30.4",
     "sequelize-mysql": "^1.7.0",
     "useragent": "^2.1.13",
     "yamlparser": "^0.0.2"
   },
+  "author": {
+    "name": "Jon Linnell",
+    "email": "linnell.jon@gmail.com"
+  },
   "scripts": {
+    "start:dev": "NODE_ENV=dev nodemon index.js",
     "start": "nodemon index.js",
     "precommit": "./node_modules/eslint/bin/eslint.js *.js */*.js"
   },
