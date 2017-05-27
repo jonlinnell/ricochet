@@ -1,9 +1,12 @@
 const express = require('express');
 const http = require('http');
+const moment = require('moment');
 const morgan = require('morgan');
 const Sequelize = require('sequelize');
-const userDataHelper = require('./helpers/user-data');
+
 require('colors');
+
+const userDataHelper = require('./helpers/user-data');
 
 const hitCtrl = require('./controllers/hit.controller');
 
@@ -56,5 +59,5 @@ app.get('*', (req, res) => {
 });
 
 http.createServer(app).listen(port, () => {
-  console.log('Server listening on port ' + port); // eslint-disable-line no-console
+  console.log(`[${moment().format('DD/MM/YY HH:mm:ss ZZ')}] Server listening on port ${port}`.cyan); // eslint-disable-line no-console
 });
