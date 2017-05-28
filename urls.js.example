@@ -1,0 +1,6 @@
+module.exports = {
+  urls: {
+    'bbc': 'http://www.bbc.co.uk/'
+  },
+  default: 'http://www.google.co.uk/'
+};

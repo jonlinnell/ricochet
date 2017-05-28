@@ -1,12 +1,14 @@
 module.exports = {
-  // How often logs are rotated. E.g. '5s' (rotate every five seconds. Don't do this.) '15m' (every fifteen minutes), '18h' (every 18 hours), '7d' (every seven days)
+  // How often logs are rotated. E.g. '5s', '15m', '24h', 7d
   logInterval: '7d',
 
   // Database config
   db: {
-  	host: 'localhost',
-  	database: 'ricochet',
-  	user: 'ricochet_user',
-  	pass: 'bounceme'
+    host: 'localhost',
+    database: 'ricochet',
+    user: 'ricochet_user',
+    pass: 'ricochet_password',
+    dialect: 'mysql',
+    port: 3306
   }
 };
