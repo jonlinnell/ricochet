@@ -1,10 +1,14 @@
-var http = require('http');
-var express = require('express');
-var morgan = require('morgan');
-var fs = require('fs');
-var path = require('path');
-var rfs = require('rotating-file-stream');
+const express = require('express');
+const http = require('http');
+const moment = require('moment');
+const morgan = require('morgan');
+const Sequelize = require('sequelize');
+
 require('colors');
+
+const userDataHelper = require('./helpers/user-data');
+
+const hitCtrl = require('./controllers/hit.controller');
 
 var app = express();
 
@@ -12,24 +16,40 @@ const config = require('./config');
 const urls = require('./urls');
 
 const port = process.env.PORT || 9000;
-const logDirectory = path.join(__dirname, 'log');
+// const env = process.env.NODE_ENV || 'dev';
 
-fs.existsSync(logDirectory) || fs.mkdirSync(logDirectory);
-
-var accessLogStream = rfs('access.log', {
-  interval: config.logInterval,
-  compress: 'gzip',
-  path: logDirectory
+const db = new Sequelize(config.db.database, config.db.user, config.db.pass, {
+  host: config.db.host,
+  dialect: config.db.dialect,
+  port: config.db.port,
+  logging: process.env.NODE_ENV === 'dev' ? console.log : false
 });
+
+db
+  .authenticate()
+  .then(() => {
+    console.log('Database connection has been established successfully.'.green); // eslint-disable-line no-console
+  })
+  .catch(err => {
+    console.error(`Unable to connect to the database: ${err}`.red); // eslint-disable-line no-console
+  });
 
 morgan.token('real-ip', (req, res) => { return req.headers['x-real-ip']; }); // eslint-disable-line no-unused-vars
 app.use(morgan('[:date[web]] ' + ':real-ip'.blue + '\t:url'.green));
-app.use(morgan(':real-ip - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] ":referrer" ":user-agent"', {stream: accessLogStream}));
 
 // Load redirects from config
 for (let [key, value] of Object.entries(urls.urls)) {
-  app.get('/' + key, (req, res) => {
-    res.redirect(value);
+  app.get(`/${key}`, (req, res) => {
+    userDataHelper.get(req)
+      .then(hitUserData => {
+        hitCtrl.saveHit(db, req.url, hitUserData);
+      })
+      .then(() => {
+        res.redirect(value);
+      })
+      .catch(error => {
+        res.send(error.red);
+      });
   });
 }
 
@@ -39,5 +59,5 @@ app.get('*', (req, res) => {
 });
 
 http.createServer(app).listen(port, () => {
-  console.log('Server listening on port ' + port); // eslint-disable-line no-console
+  console.log(`[${moment().format('DD/MM/YY HH:mm:ss ZZ')}] Server listening on port ${port}`.cyan); // eslint-disable-line no-console
 });
