@@ -1,50 +1,32 @@
 {
   "name": "ricochet",
-  "version": "0.1.0",
-  "description": "Simple HTTP redirection engine with MySQL usage logging.",
-  "main": "index.js",
-  "license": "MIT",
-  "dependencies": {
-    "bluebird": "^3.5.0",
-    "colors": "^1.1.2",
-    "eslint": "^3.19.0",
-    "express": "^4.15.2",
-    "express-ls-routes": "^1.0.2",
-    "fs": "^0.0.1-security",
-    "geoip-lite": "^1.2.1",
-    "http": "^0.0.0",
-    "husky": "^0.13.3",
-    "moment": "^2.18.1",
-    "morgan": "^1.8.1",
-    "mysql2": "^1.2.0",
-    "nodemon": "^1.11.0",
-    "path": "^0.12.7",
-    "public-ip": "^2.3.5",
-    "request": "^2.81.0",
-    "request-ip": "^2.0.1",
-    "sequelize": "^3.30.4",
-    "sequelize-mysql": "^1.7.0",
-    "useragent": "^2.1.13",
-    "yamlparser": "^0.0.2"
-  },
-  "author": {
-    "name": "Jon Linnell",
-    "email": "linnell.jon@gmail.com"
-  },
+  "version": "1.0.0",
+  "description": "A simple HTTP redirection engine",
+  "main": "app.js",
   "scripts": {
-    "start:dev": "NODE_ENV=dev nodemon index.js",
-    "start": "nodemon index.js",
-    "precommit": "./node_modules/eslint/bin/eslint.js *.js */*.js"
+    "start": "./node_modules/.bin/nodemon",
+    "test": "./node_modules/.bin/eslint .",
+    "precommit": "yarn test"
+  },
+  "author": "Jon Linnell",
+  "license": "ISC",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.18.2",
+    "dotenv": "^4.0.0",
+    "express": "^4.16.2",
+    "joi": "^13.0.1",
+    "jsonwebtoken": "^8.1.0",
+    "morgan": "^1.9.0",
+    "sequelize": "^4.22.6",
+    "universal-ga": "^1.2.0"
   },
   "devDependencies": {
-    "babel-eslint": "^6.1.2",
-    "eslint-config-airbnb-es5": "^1.1.0",
-    "eslint-plugin-react": "^7.0.0"
-  },
-  "eslintConfig": {
-    "env": {
-      "node": true
-    },
-    "extends": "eslint-config-airbnb-es5"
+    "eslint": "^4.11.0",
+    "eslint-config-airbnb-base": "^12.1.0",
+    "eslint-plugin-import": "^2.8.0",
+    "husky": "^0.14.3",
+    "nodemon": "^1.12.1",
+    "sqlite3": "^3.1.13"
   }
 }
