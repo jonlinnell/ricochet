@@ -10,7 +10,7 @@ module.exports = {
     dialect: 'mysql',
     username: 'someuser',
     password: null,
-    database: 'llevents',
+    database: 'ricochet',
     host: '127.0.0.1',
     operatorsAliases: Sequelize.Op,
     logging: false
