@@ -12,6 +12,7 @@ module.exports = {
     password: null,
     database: 'llevents',
     host: '127.0.0.1',
-    operatorsAliases: Sequelize.Op
+    operatorsAliases: Sequelize.Op,
+    logging: false
   }
 }
