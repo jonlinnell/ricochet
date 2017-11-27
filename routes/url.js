@@ -9,7 +9,7 @@ const urlCreateSchema = require('../schemas/urlCreate')
 const endpoint = '/url'
 
 module.exports = (app) => {
-  app.get(endpoint, (req, res) => {
+  app.get(endpoint, verifyToken, (req, res) => {
     URL.findAll()
       .then((urls) => {
         res.json(urls)
@@ -33,7 +33,7 @@ module.exports = (app) => {
     })
   })
 
-  app.get(`${endpoint}/:id`, (req, res) => {
+  app.get(`${endpoint}/:id`, verifyToken, (req, res) => {
     URL.findById(req.params.id)
       .then((url) => {
         res.json(url)

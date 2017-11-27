@@ -1,9 +1,12 @@
 /* eslint-disable no-console */
 require('dotenv').config()
+const bcrypt = require('bcryptjs')
 const bodyParser = require('body-parser')
 const express = require('express')
+const fs = require('fs')
 const morgan = require('morgan')
-const bcrypt = require('bcryptjs')
+const path = require('path')
+const rfs = require('rotating-file-stream')
 
 const models = require('./models')
 const { User } = require('./models')
@@ -12,12 +15,18 @@ const app = express()
 
 const port = process.env.PORT || 3000
 
-app.use(bodyParser.urlencoded({ extended: false }))
-app.use(morgan('combined'))
+const logDir = path.join(__dirname, 'logs')
+if (!fs.existsSync(logDir)) {
+  fs.mkdirSync(logDir)
+}
 
-app.get('/status', (req, res) => {
-  res.status(200).send('Hello there!')
+const accessLog = rfs('access.log', {
+  interval: '1d',
+  path: logDir
 })
+
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use(morgan('combined', { stream: accessLog }))
 
 require('./routes/auth')(app)
 require('./routes/url')(app)
@@ -25,7 +34,7 @@ require('./routes/url')(app)
 models.sequelize.sync().then(() => {
   console.log('Database connection established.')
 
-  if (process.env.NODE_ENV === 'development') {
+  if (process.env.CREATE_DEFAULT_ADMIN) {
     User.findOne({
       where: { username: 'admin' },
       attributes: { exclude: ['password'] }
