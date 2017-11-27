@@ -45,7 +45,7 @@ models.sequelize.sync().then(() => {
       })
   }
 
-  require('./routes/links')(app)
+  require('./routes/redirects')(app)
 
   app.listen(port, () => { console.log(`Listening on ${port}`) })
 })

@@ -23,7 +23,7 @@ module.exports = (app) => {
       } else {
         URL.create(req.body)
           .then((url) => {
-            require('../routes/links')(app)
+            require('../routes/redirects')(app)
             res.json(url)
           })
           .catch(err => res

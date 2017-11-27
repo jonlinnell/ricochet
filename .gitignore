@@ -61,7 +61,7 @@ typings/
 config/db.js
 
 # Test database
-.db.dev.sqlite
+db.dev.sqlite
 
 # Media files
 media/
