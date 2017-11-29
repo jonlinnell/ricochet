@@ -2,6 +2,7 @@
 require('dotenv').config()
 const bcrypt = require('bcryptjs')
 const bodyParser = require('body-parser')
+const cookieParser = require('cookie-parser')
 const express = require('express')
 const fs = require('fs')
 const morgan = require('morgan')
@@ -27,6 +28,7 @@ const accessLog = rfs('access.log', {
 
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(morgan('combined', { stream: accessLog }))
+app.use(cookieParser())
 
 require('./routes/auth')(app)
 require('./routes/url')(app)
