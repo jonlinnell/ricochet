@@ -32,6 +32,7 @@ app.use(cookieParser())
 
 /* Remember to filter fixed routes in the Joi schema */
 require('./routes/auth')(app)
+require('./routes/clicks')(app)
 require('./routes/url')(app)
 
 models.sequelize.sync().then(() => {
