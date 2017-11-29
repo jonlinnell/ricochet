@@ -30,6 +30,7 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(morgan('combined', { stream: accessLog }))
 app.use(cookieParser())
 
+/* Remember to filter fixed routes in the Joi schema */
 require('./routes/auth')(app)
 require('./routes/url')(app)
 
