@@ -5,6 +5,7 @@ const verifyToken = require('../lib/verifyToken')
 const { URL } = require('../models')
 
 const urlCreateSchema = require('../schemas/urlCreate')
+const urlUpdateSchema = require('../schemas/urlUpdate')
 
 const endpoint = '/url'
 
@@ -41,7 +42,7 @@ module.exports = (app) => {
   })
 
   app.put(`${endpoint}/:id`, verifyToken, (req, res) => {
-    Joi.validate(req.body, urlCreateSchema, (error) => {
+    Joi.validate(req.body, urlUpdateSchema, (error) => {
       if (error !== null) {
         res.sendStatus(400)
       } else {
