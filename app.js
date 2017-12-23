@@ -3,6 +3,7 @@ require('dotenv').config()
 const bcrypt = require('bcryptjs')
 const bodyParser = require('body-parser')
 const cookieParser = require('cookie-parser')
+const cors = require('cors')
 const express = require('express')
 const fs = require('fs')
 const morgan = require('morgan')
@@ -28,6 +29,7 @@ const accessLog = rfs('access.log', {
 
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(morgan('combined', { stream: accessLog }))
+app.use(cors())
 app.use(cookieParser())
 
 /* Remember to filter fixed routes in the Joi schema */
@@ -57,6 +59,10 @@ models.sequelize.sync().then(() => {
         }
       })
   }
+
+  app.get('/status', (req, res) => {
+    res.status(200).json({ message: 'Hello there!' })
+  })
 
   require('./routes/redirects')(app)
 
