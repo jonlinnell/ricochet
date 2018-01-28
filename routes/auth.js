@@ -40,7 +40,7 @@ module.exports = (app) => {
         if (!user) {
           return res.status(404).send('User not found.')
         }
-        res.status(200).send(user)
+        return res.status(200).send(user)
       })
       .catch(dbErr => res.status(500).send(`A server error occurred. ${dbErr}`))
   })
@@ -63,7 +63,7 @@ module.exports = (app) => {
         }
 
         const token = jwt.sign({ id: user.id }, process.env.SECRET, { expiresIn: 86400 })
-        res.status(200).send({ auth: true, token })
+        return res.status(200).send({ auth: true, token })
       })
       .catch(err => res.status(500).send({ auth: false, message: `A server error occurred. ${err}` }))
   })

@@ -27,7 +27,7 @@ const accessLog = rfs('access.log', {
   path: logDir
 })
 
-app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.json())
 app.use(morgan('combined', { stream: accessLog }))
 app.use(cors())
 app.use(cookieParser())
