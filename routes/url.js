@@ -20,7 +20,9 @@ module.exports = (app) => {
   app.post(endpoint, verifyToken, (req, res) => {
     Joi.validate(req.body, urlCreateSchema, (error) => {
       if (error !== null) {
-        res.sendStatus(400)
+        res
+          .status(400)
+          .send({ message: error.details[0].message })
       } else {
         URL.create(req.body)
           .then((url) => {
@@ -44,7 +46,9 @@ module.exports = (app) => {
   app.put(`${endpoint}/:id`, verifyToken, (req, res) => {
     Joi.validate(req.body, urlUpdateSchema, (error) => {
       if (error !== null) {
-        res.sendStatus(400)
+        res
+          .status(400)
+          .send({ message: error.details[0].message })
       } else {
         URL.update(req.body, {
           where: {

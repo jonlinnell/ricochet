@@ -12,7 +12,9 @@ module.exports = (app) => {
   app.post('/auth/register', verifyToken, (req, res) => {
     Joi.validate(req.body, userCreateSchema, (error) => {
       if (error !== null) {
-        res.sendStatus(400)
+        res
+          .status(400)
+          .send({ message: error.details[0].message })
       } else {
         const hashedPassword = bcrypt.hashSync(req.body.password, 8)
 
