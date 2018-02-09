@@ -6,9 +6,15 @@ const cookieParser = require('cookie-parser')
 const cors = require('cors')
 const express = require('express')
 const fs = require('fs')
+const helmet = require('helmet')
+const http = require('http')
+const https = require('https')
 const morgan = require('morgan')
 const path = require('path')
 const rfs = require('rotating-file-stream')
+
+const serverCert = fs.readFileSync(process.env.SSL_CERT)
+const privateKey = fs.readFileSync(process.env.SSL_KEY)
 
 const models = require('./models')
 const { User } = require('./models')
@@ -30,6 +36,7 @@ const accessLog = rfs('access.log', {
 app.use(bodyParser.json())
 app.use(morgan('combined', { stream: accessLog }))
 app.use(cors())
+app.use(helmet)
 app.use(cookieParser())
 
 /* Remember to filter fixed routes in the Joi schema */
@@ -66,5 +73,13 @@ models.sequelize.sync().then(() => {
 
   require('./routes/redirects')(app)
 
-  app.listen(port, () => { console.log(`Listening on ${port}`) })
+  if (process.env.NODE_ENV === 'production') {
+    const options = {
+      cert: serverCert,
+      key: privateKey
+    }
+    https.createServer(options, app).listen(port)
+  } else {
+    http.createServer(app).listen(port)
+  }
 })
