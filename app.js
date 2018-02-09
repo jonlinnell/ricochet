@@ -36,7 +36,7 @@ const accessLog = rfs('access.log', {
 app.use(bodyParser.json())
 app.use(morgan('combined', { stream: accessLog }))
 app.use(cors())
-app.use(helmet)
+app.use(helmet())
 app.use(cookieParser())
 
 /* Remember to filter fixed routes in the Joi schema */
