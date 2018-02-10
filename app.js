@@ -13,14 +13,13 @@ const morgan = require('morgan')
 const path = require('path')
 const rfs = require('rotating-file-stream')
 
-const serverCert = fs.readFileSync(process.env.SSL_CERT)
-const privateKey = fs.readFileSync(process.env.SSL_KEY)
-
 const models = require('./models')
 const { User } = require('./models')
 
+const redirector = express()
 const app = express()
 
+const apiPort = process.env.API_PORT || 9000
 const port = process.env.PORT || 3000
 
 const logDir = path.join(__dirname, 'logs')
@@ -34,10 +33,12 @@ const accessLog = rfs('access.log', {
 })
 
 app.use(bodyParser.json())
-app.use(morgan('combined', { stream: accessLog }))
 app.use(cors())
 app.use(helmet())
 app.use(cookieParser())
+app.use(morgan('combined', { stream: accessLog }))
+
+redirector.use(cookieParser())
 
 /* Remember to filter fixed routes in the Joi schema */
 require('./routes/auth')(app)
@@ -71,15 +72,22 @@ models.sequelize.sync().then(() => {
     res.status(200).json({ message: 'Hello there!' })
   })
 
-  require('./routes/redirects')(app)
+  require('./routes/redirects')(redirector)
+
+  console.log(`We're in ${process.env.NODE_ENV} apparently.`)
 
   if (process.env.NODE_ENV === 'production') {
     const options = {
-      cert: serverCert,
-      key: privateKey
+      cert: fs.readFileSync(process.env.SSL_CERT),
+      key: fs.readFileSync(process.env.SSL_KEY)
     }
-    https.createServer(options, app).listen(port)
+    https.createServer(options, app).listen(apiPort)
+    console.log(`[API] Service (https) started on ${apiPort}.`)
   } else {
-    http.createServer(app).listen(port)
+    http.createServer(app).listen(apiPort)
+    console.log(`[API] Service (http) started on ${apiPort}.`)
   }
+
+  http.createServer(redirector).listen(port)
+  console.log(`[WEB] Service started on ${port}.`)
 })
