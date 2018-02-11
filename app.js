@@ -13,6 +13,8 @@ const morgan = require('morgan')
 const path = require('path')
 const rfs = require('rotating-file-stream')
 
+require('colors')
+
 const models = require('./models')
 const { User } = require('./models')
 
@@ -40,13 +42,15 @@ app.use(morgan('combined', { stream: accessLog }))
 
 redirector.use(cookieParser())
 
+console.log(`Launching in ${process.env.NODE_ENV || 'development'} mode.`.cyan)
+
 /* Remember to filter fixed routes in the Joi schema */
 require('./routes/auth')(app)
 require('./routes/clicks')(app)
 require('./routes/url')(app)
 
 models.sequelize.sync().then(() => {
-  console.log('Database connection established.')
+  console.log(`[${'DB'.bold}] Connection established.`.green)
 
   if (process.env.CREATE_DEFAULT_ADMIN) {
     User.findOne({
@@ -62,7 +66,7 @@ models.sequelize.sync().then(() => {
             password: hashedPassword
           })
             .then(() => {
-              console.log('Default admin account doesn\'t exist. Creating it.')
+              console.log('Default admin account doesn\'t exist. Creating it.'.yellow)
             })
         }
       })
@@ -74,20 +78,18 @@ models.sequelize.sync().then(() => {
 
   require('./routes/redirects')(redirector)
 
-  console.log(`We're in ${process.env.NODE_ENV} apparently.`)
-
   if (process.env.NODE_ENV === 'production') {
     const options = {
       cert: fs.readFileSync(process.env.SSL_CERT),
       key: fs.readFileSync(process.env.SSL_KEY)
     }
     https.createServer(options, app).listen(apiPort)
-    console.log(`[API] Service (https) started on ${apiPort}.`)
+    console.log(`[${'API'.bold}] Service (https) started on ${apiPort}.`.green)
   } else {
     http.createServer(app).listen(apiPort)
-    console.log(`[API] Service (http) started on ${apiPort}.`)
+    console.log(`[${'API'.bold}] Service (http) started on ${apiPort}.`.green)
   }
 
   http.createServer(redirector).listen(port)
-  console.log(`[WEB] Service started on ${port}.`)
+  console.log(`[${'WEB'.bold}] Service started on ${port}.`.green)
 })
