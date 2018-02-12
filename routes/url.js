@@ -1,4 +1,5 @@
 const Joi = require('joi')
+const sha256 = require('sha256')
 
 const verifyToken = require('../lib/verifyToken')
 
@@ -11,7 +12,22 @@ const endpoint = '/url'
 
 module.exports = (app) => {
   app.get(endpoint, verifyToken, (req, res) => {
-    URL.findAll()
+    URL.findAll({
+      where: {
+        deleted: false
+      }
+    })
+      .then((urls) => {
+        res.json(urls)
+      })
+  })
+
+  app.get(`${endpoint}/deleted`, verifyToken, (req, res) => {
+    URL.findAll({
+      where: {
+        deleted: true
+      }
+    })
       .then((urls) => {
         res.json(urls)
       })
@@ -67,7 +83,14 @@ module.exports = (app) => {
   app.delete(`${endpoint}/:id`, verifyToken, (req, res) => {
     URL.findById(req.params.id)
       .then((url) => {
-        url.destroy()
+        URL.update({
+          title: `${url.title}_${sha256(`${url.title}${url.createdAt}`).substr(51, 6)}`,
+          deleted: true
+        }, {
+          where: {
+            id: req.params.id
+          }
+        })
 
         return res.sendStatus(200)
       })
