@@ -1,10 +1,10 @@
-const Sequelize = require('sequelize')
+// const Sequelize = require('sequelize')
 
 const verifyToken = require('../lib/verifyToken')
 
 const { Click } = require('../models')
 
-const { Op } = Sequelize
+// const { Op } = Sequelize
 
 const endpoint = '/clicks'
 
@@ -15,25 +15,68 @@ module.exports = (app) => {
       .catch(error => res.status(500).send(error))
   })
 
-  app.get(`${endpoint}/:id`, verifyToken, (req, res) => {
+  app.get(`${endpoint}/count`, (req, res) => {
+    Click.count({})
+      .then(count => res.json(count))
+      .catch(error => res.status(500).send(error))
+  })
+
+  app.get(`${endpoint}/url/:urlid`, verifyToken, (req, res) => {
     Click.findAll({
       where: {
-        URLId: req.params.id
+        URLId: req.params.urlid
       }
     })
       .then(clicks => res.json(clicks))
       .catch(error => res.status(500).send(error))
   })
 
-  app.get(`${endpoint}/calendarCount/:id/:days`, verifyToken, (req, res) => {
-    Click.findAll({
+  app.get(`${endpoint}/url/count/:urlid`, (req, res) => {
+    Click.count({
       where: {
-        createdAt: { // eslint-disable-next-line no-mixed-operators
-          [Op.gte]: new Date(new Date() - req.params.days * 24 * 60 * 60 * 1000)
-        }
+        URLId: req.params.urlid
       }
     })
-      .then(clicks => res.json({ clicks }))
+      .then(count => res.json(count))
+      .catch(error => res.status(500).send(error))
+  })
+
+  app.get(`${endpoint}/user/count`, (req, res) => {
+    Click.count({
+      distinct: true,
+      col: 'userId'
+    })
+      .then(count => res.json(count))
+      .catch(error => res.status(500).send(error))
+  })
+
+  app.get(`${endpoint}/user/:userId`, verifyToken, (req, res) => {
+    Click.findAll({
+      where: {
+        userId: req.params.userId
+      }
+    })
+      .then(clicks => res.json(clicks))
+      .catch(error => res.status(500).send(error))
+  })
+
+  app.get(`${endpoint}/user/count/:userId`, verifyToken, (req, res) => {
+    Click.count({
+      where: {
+        userId: req.params.userId
+      }
+    })
+      .then(count => res.json(count))
+      .catch(error => res.status(500).send(error))
+  })
+
+  app.get(`${endpoint}/:id`, (req, res) => {
+    Click.findOne({
+      where: {
+        id: req.params.id
+      }
+    })
+      .then(click => res.json(click))
       .catch(error => res.status(500).send(error))
   })
 }
