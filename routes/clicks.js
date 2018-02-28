@@ -1,10 +1,8 @@
-// const Sequelize = require('sequelize')
+const Sequelize = require('sequelize')
 
 const verifyToken = require('../lib/verifyToken')
 
 const { Click } = require('../models')
-
-// const { Op } = Sequelize
 
 const endpoint = '/clicks'
 
@@ -21,13 +19,12 @@ module.exports = (app) => {
       .catch(error => res.status(500).send(error))
   })
 
-  app.get(`${endpoint}/url/:urlid`, verifyToken, (req, res) => {
+  app.get(`${endpoint}/count/groupByUrl`, (req, res) => {
     Click.findAll({
-      where: {
-        URLId: req.params.urlid
-      }
+      attributes: ['URLId', [Sequelize.fn('COUNT', 'URLId'), 'count']],
+      group: 'URLId'
     })
-      .then(clicks => res.json(clicks))
+      .then(counts => res.json(counts))
       .catch(error => res.status(500).send(error))
   })
 
@@ -38,6 +35,16 @@ module.exports = (app) => {
       }
     })
       .then(count => res.json(count))
+      .catch(error => res.status(500).send(error))
+  })
+
+  app.get(`${endpoint}/url/:urlid`, verifyToken, (req, res) => {
+    Click.findAll({
+      where: {
+        URLId: req.params.urlid
+      }
+    })
+      .then(clicks => res.json(clicks))
       .catch(error => res.status(500).send(error))
   })
 
