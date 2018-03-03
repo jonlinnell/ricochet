@@ -1,9 +1,11 @@
 const Joi = require('joi')
 const sha256 = require('sha256')
 
+const Sequelize = require('sequelize')
+
 const verifyToken = require('../lib/verifyToken')
 
-const { URL } = require('../models')
+const { URL, Click } = require('../models')
 
 const urlCreateSchema = require('../schemas/urlCreate')
 const urlUpdateSchema = require('../schemas/urlUpdate')
@@ -15,7 +17,14 @@ module.exports = (app) => {
     URL.findAll({
       where: {
         deleted: false
-      }
+      },
+      attributes: {
+        include: [[Sequelize.fn('COUNT', Sequelize.col('Click.URLId')), 'clicks']]
+      },
+      include: [{
+        model: Click, attributes: []
+      }],
+      group: ['Click.URLId']
     })
       .then((urls) => {
         res.json(urls)
