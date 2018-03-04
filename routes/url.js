@@ -24,7 +24,7 @@ module.exports = (app) => {
       include: [{
         model: Click, attributes: []
       }],
-      group: ['Click.URLId']
+      group: ['Click.URLId', 'URL']
     })
       .then((urls) => {
         res.json(urls)
