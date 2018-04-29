@@ -24,14 +24,10 @@ module.exports = (app) => {
           username: req.body.username,
           password: hashedPassword
         })
-          .then((newUser) => {
-            const token = jwt.sign(
-              { id: newUser.id },
-              process.env.SECRET,
-              { expiresIn: 86400 }
-            )
-            res.status(200).send({ auth: true, token })
-          })
+          .then(newUser => res.status(200).send({
+            username: newUser.username,
+            createdAt: newUser.createdAt
+          }))
       }
     })
   })
