@@ -1,6 +1,7 @@
-const jwt = require('jsonwebtoken')
-const Joi = require('joi')
 const bcrypt = require('bcryptjs')
+const Joi = require('joi')
+const jwt = require('jsonwebtoken')
+const sha256 = require('sha256')
 
 const verifyToken = require('../lib/verifyToken')
 
@@ -45,18 +46,46 @@ module.exports = (app) => {
       .catch(dbErr => res.status(500).send(`A server error occurred. ${dbErr}`))
   })
 
-  app.get(`${endpoint}/users`, verifyToken, (req, res) => {
+  app.get(`${endpoint}/user`, verifyToken, (req, res) => {
     User.findAll({
-      attributes: ['username', 'createdAt']
+      where: {
+        deleted: false
+      },
+      attributes: ['username', 'createdAt', 'deleted']
     })
       .then(users => res.json(users))
       .catch(dbErr => res.status(500).send(`A server error occurred. ${dbErr}`))
   })
 
+  app.delete(`${endpoint}/user/:username`, verifyToken, (req, res) => {
+    User.findOne({
+      where: {
+        username: req.params.username
+      }
+    })
+      .then((user) => {
+        if (!user) {
+          return res.status(404).send('User not found.')
+        }
+        User.update({
+          username: `${user.username}_${sha256(`${user.username}${user.createdAt}`).substr(51, 6)}`,
+          deleted: true
+        }, {
+          where: {
+            username: user.username
+          }
+        })
+          .then(() => res.sendStatus(200))
+          .catch(dbUpdateErr => res.status(500).send(dbUpdateErr))
+      })
+      .catch(dbError => res.status(500).send(dbError))
+  })
+
   app.post(`${endpoint}/login`, (req, res) => {
     User.findOne({
       where: {
-        username: req.body.username
+        username: req.body.username,
+        deleted: false
       }
     })
       .then((user) => {
