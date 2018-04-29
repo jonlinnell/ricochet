@@ -8,6 +8,7 @@ const verifyToken = require('../lib/verifyToken')
 const { User } = require('../models')
 
 const userCreateSchema = require('../schemas/userCreate')
+const userUpdatePasswordSchema = require('../schemas/userUpdatePassword')
 
 const endpoint = '/auth'
 
@@ -55,6 +56,34 @@ module.exports = (app) => {
     })
       .then(users => res.json(users))
       .catch(dbErr => res.status(500).send(`A server error occurred. ${dbErr}`))
+  })
+
+  app.put(`${endpoint}/user/:username/password`, verifyToken, (req, res) => {
+    Joi.validate(req.body, userUpdatePasswordSchema, (error) => {
+      if (error !== null) {
+        res
+          .status(400)
+          .send({ message: error.details[0].message })
+      } else {
+        User.findOne({
+          where: {
+            username: req.params.username,
+            deleted: false
+          }
+        })
+          .then(user => User.update(
+            {
+              password: bcrypt.hashSync(req.body.password, 8)
+            },
+            {
+              where: { username: user.username }
+            }
+          )
+            .then(() => res.sendStatus(200))
+            .catch(dbUpdateErr => res.status(500).send(dbUpdateErr)))
+          .catch(dbSearchErr => res.status(500).send(dbSearchErr))
+      }
+    })
   })
 
   app.delete(`${endpoint}/user/:username`, verifyToken, (req, res) => {
