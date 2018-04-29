@@ -8,8 +8,10 @@ const { User } = require('../models')
 
 const userCreateSchema = require('../schemas/userCreate')
 
+const endpoint = '/auth'
+
 module.exports = (app) => {
-  app.post('/auth/register', verifyToken, (req, res) => {
+  app.post(`${endpoint}/register`, verifyToken, (req, res) => {
     Joi.validate(req.body, userCreateSchema, (error) => {
       if (error !== null) {
         res
@@ -34,7 +36,7 @@ module.exports = (app) => {
     })
   })
 
-  app.get('/auth/me', verifyToken, (req, res) => {
+  app.get(`${endpoint}/me`, verifyToken, (req, res) => {
     User.findById(req.userId, {
       attributes: { exclude: ['password', 'createdAt', 'updatedAt'] }
     })
@@ -47,7 +49,15 @@ module.exports = (app) => {
       .catch(dbErr => res.status(500).send(`A server error occurred. ${dbErr}`))
   })
 
-  app.post('/auth/login', (req, res) => {
+  app.get(`${endpoint}/users`, verifyToken, (req, res) => {
+    User.findAll({
+      attributes: ['username', 'createdAt']
+    })
+      .then(users => res.json(users))
+      .catch(dbErr => res.status(500).send(`A server error occurred. ${dbErr}`))
+  })
+
+  app.post(`${endpoint}/login`, (req, res) => {
     User.findOne({
       where: {
         username: req.body.username
