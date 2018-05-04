@@ -8,6 +8,7 @@ const verifyToken = require('../lib/verifyToken')
 const { User } = require('../models')
 
 const userCreateSchema = require('../schemas/userCreate')
+const loginCredentialsSchema = require('../schemas/loginCredentials')
 const userUpdatePasswordSchema = require('../schemas/userUpdatePassword')
 
 const endpoint = '/auth'
@@ -111,26 +112,34 @@ module.exports = (app) => {
   })
 
   app.post(`${endpoint}/login`, (req, res) => {
-    User.findOne({
-      where: {
-        username: req.body.username,
-        deleted: false
+    Joi.validate(req.body, loginCredentialsSchema, (error) => {
+      if (error !== null) {
+        res
+          .status(400)
+          .send({ message: error.details[0].message })
+      } else {
+        User.findOne({
+          where: {
+            username: req.body.username,
+            deleted: false
+          }
+        })
+          .then((user) => {
+            if (!user) {
+              return res.status(400).send({ auth: false, message: 'User not found.' })
+            }
+
+            const passwordIsValid = bcrypt.compareSync(req.body.password, user.password)
+
+            if (!passwordIsValid) {
+              return res.status(401).send({ auth: false, message: 'Password incorrect' })
+            }
+
+            const token = jwt.sign({ id: user.id }, process.env.SECRET, { expiresIn: 86400 })
+            return res.status(200).send({ auth: true, token })
+          })
+          .catch(dbError => res.status(500).send({ auth: false, message: `A server error occurred. ${dbError}` }))
       }
     })
-      .then((user) => {
-        if (!user) {
-          return res.status(400).send({ auth: false, message: 'User not found.' })
-        }
-
-        const passwordIsValid = bcrypt.compareSync(req.body.password, user.password)
-
-        if (!passwordIsValid) {
-          return res.status(401).send({ auth: false, message: 'Password incorrect' })
-        }
-
-        const token = jwt.sign({ id: user.id }, process.env.SECRET, { expiresIn: 86400 })
-        return res.status(200).send({ auth: true, token })
-      })
-      .catch(error => res.status(500).send({ auth: false, message: `A server error occurred. ${error}` }))
   })
 }
