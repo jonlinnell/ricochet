@@ -8,8 +8,9 @@ const verifyToken = require('../lib/verifyToken')
 const { User } = require('../models')
 
 const userCreateSchema = require('../schemas/userCreate')
-const loginCredentialsSchema = require('../schemas/loginCredentials')
+const userDeleteSchema = require('../schemas/userDelete')
 const userUpdatePasswordSchema = require('../schemas/userUpdatePassword')
+const loginCredentialsSchema = require('../schemas/loginCredentials')
 
 const endpoint = '/auth'
 
@@ -53,7 +54,7 @@ module.exports = (app) => {
       where: {
         deleted: false
       },
-      attributes: ['username', 'createdAt', 'deleted']
+      attributes: ['id', 'username', 'createdAt', 'deleted']
     })
       .then(users => res.json(users))
       .catch(dbError => res.status(500).send({ message: `A server error occurred. ${dbError}` }))
@@ -88,27 +89,33 @@ module.exports = (app) => {
   })
 
   app.delete(`${endpoint}/user/:username`, verifyToken, (req, res) => {
-    User.findOne({
-      where: {
-        username: req.params.username
-      }
-    })
-      .then((user) => {
-        if (!user) {
-          return res.status(404).send({ message: 'User not found.' })
-        }
-        User.update({
-          username: `${user.username}_${sha256(`${user.username}${user.createdAt}`).substr(51, 6)}`,
-          deleted: true
-        }, {
+    Joi.validate(req.params, userDeleteSchema, (error) => {
+      if (error) {
+        res.status(400).send({ message: error })
+      } else {
+        User.findOne({
           where: {
-            username: user.username
+            username: req.params.username
           }
         })
-          .then(() => res.sendStatus(200))
+          .then((user) => {
+            if (!user) {
+              return res.status(404).send({ message: 'User not found.' })
+            }
+            User.update({
+              username: `${user.username}_${sha256(`${user.username}${user.createdAt}`).substr(51, 6)}`,
+              deleted: true
+            }, {
+              where: {
+                username: user.username
+              }
+            })
+              .then(() => res.sendStatus(200))
+              .catch(message => res.status(500).send({ message }))
+          })
           .catch(message => res.status(500).send({ message }))
-      })
-      .catch(message => res.status(500).send({ message }))
+      }
+    })
   })
 
   app.post(`${endpoint}/login`, (req, res) => {
