@@ -44,7 +44,7 @@ module.exports = (app) => {
         }
         return res.status(200).send(user)
       })
-      .catch(dbErr => res.status(500).send(`A server error occurred. ${dbErr}`))
+      .catch(dbError => res.status(500).send({ message: `A server error occurred. ${dbError}` }))
   })
 
   app.get(`${endpoint}/user`, verifyToken, (req, res) => {
@@ -55,7 +55,7 @@ module.exports = (app) => {
       attributes: ['username', 'createdAt', 'deleted']
     })
       .then(users => res.json(users))
-      .catch(dbErr => res.status(500).send(`A server error occurred. ${dbErr}`))
+      .catch(dbError => res.status(500).send({ message: `A server error occurred. ${dbError}` }))
   })
 
   app.put(`${endpoint}/user/:username/password`, verifyToken, (req, res) => {
@@ -80,8 +80,8 @@ module.exports = (app) => {
             }
           )
             .then(() => res.sendStatus(200))
-            .catch(dbUpdateErr => res.status(500).send(dbUpdateErr)))
-          .catch(dbSearchErr => res.status(500).send(dbSearchErr))
+            .catch(message => res.status(500).send({ message })))
+          .catch(message => res.status(500).send({ message }))
       }
     })
   })
@@ -94,7 +94,7 @@ module.exports = (app) => {
     })
       .then((user) => {
         if (!user) {
-          return res.status(404).send('User not found.')
+          return res.status(404).send({ message: 'User not found.' })
         }
         User.update({
           username: `${user.username}_${sha256(`${user.username}${user.createdAt}`).substr(51, 6)}`,
@@ -105,9 +105,9 @@ module.exports = (app) => {
           }
         })
           .then(() => res.sendStatus(200))
-          .catch(dbUpdateErr => res.status(500).send(dbUpdateErr))
+          .catch(message => res.status(500).send({ message }))
       })
-      .catch(dbError => res.status(500).send(dbError))
+      .catch(message => res.status(500).send({ message }))
   })
 
   app.post(`${endpoint}/login`, (req, res) => {
@@ -119,18 +119,18 @@ module.exports = (app) => {
     })
       .then((user) => {
         if (!user) {
-          return res.status(404).send({ auth: false, message: 'User not found.' })
+          return res.status(400).send({ auth: false, message: 'User not found.' })
         }
 
         const passwordIsValid = bcrypt.compareSync(req.body.password, user.password)
 
         if (!passwordIsValid) {
-          return res.status(401).send({ auth: false, message: 'Password incorrect', token: null })
+          return res.status(401).send({ auth: false, message: 'Password incorrect' })
         }
 
         const token = jwt.sign({ id: user.id }, process.env.SECRET, { expiresIn: 86400 })
         return res.status(200).send({ auth: true, token })
       })
-      .catch(err => res.status(500).send({ auth: false, message: `A server error occurred. ${err}` }))
+      .catch(error => res.status(500).send({ auth: false, message: `A server error occurred. ${error}` }))
   })
 }

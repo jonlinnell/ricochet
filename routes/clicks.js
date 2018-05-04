@@ -10,13 +10,13 @@ module.exports = (app) => {
   app.get(endpoint, verifyToken, (req, res) => {
     Click.findAll()
       .then(clicks => res.json(clicks))
-      .catch(error => res.status(500).send(error))
+      .catch(error => res.status(500).send({ message: error }))
   })
 
   app.get(`${endpoint}/count`, (req, res) => {
     Click.count({})
       .then(count => res.json(count))
-      .catch(error => res.status(500).send(error))
+      .catch(error => res.status(500).send({ message: error }))
   })
 
   app.get(`${endpoint}/count/groupByUrl`, (req, res) => {
@@ -25,7 +25,7 @@ module.exports = (app) => {
       group: 'URLId'
     })
       .then(counts => res.json(counts))
-      .catch(error => res.status(500).send(error))
+      .catch(error => res.status(500).send({ message: error }))
   })
 
   app.get(`${endpoint}/url/count/:urlid`, (req, res) => {
@@ -35,7 +35,7 @@ module.exports = (app) => {
       }
     })
       .then(count => res.json(count))
-      .catch(error => res.status(500).send(error))
+      .catch(error => res.status(500).send({ message: error }))
   })
 
   app.get(`${endpoint}/url/:urlid`, verifyToken, (req, res) => {
@@ -45,7 +45,7 @@ module.exports = (app) => {
       }
     })
       .then(clicks => res.json(clicks))
-      .catch(error => res.status(500).send(error))
+      .catch(error => res.status(500).send({ message: error }))
   })
 
   app.get(`${endpoint}/user/count`, (req, res) => {
@@ -54,7 +54,7 @@ module.exports = (app) => {
       col: 'userId'
     })
       .then(count => res.json(count))
-      .catch(error => res.status(500).send(error))
+      .catch(error => res.status(500).send({ message: error }))
   })
 
   app.get(`${endpoint}/user/:userId`, verifyToken, (req, res) => {
@@ -64,7 +64,7 @@ module.exports = (app) => {
       }
     })
       .then(clicks => res.json(clicks))
-      .catch(error => res.status(500).send(error))
+      .catch(error => res.status(500).send({ message: error }))
   })
 
   app.get(`${endpoint}/user/count/:userId`, verifyToken, (req, res) => {
@@ -74,7 +74,7 @@ module.exports = (app) => {
       }
     })
       .then(count => res.json(count))
-      .catch(error => res.status(500).send(error))
+      .catch(error => res.status(500).send({ message: error }))
   })
 
   app.get(`${endpoint}/:id`, (req, res) => {
@@ -84,6 +84,6 @@ module.exports = (app) => {
       }
     })
       .then(click => res.json(click))
-      .catch(error => res.status(500).send(error))
+      .catch(error => res.status(500).send({ message: error }))
   })
 }

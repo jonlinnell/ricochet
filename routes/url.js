@@ -53,9 +53,9 @@ module.exports = (app) => {
           .then((url) => {
             res.json(url)
           })
-          .catch(err => res
+          .catch(dbError => res
             .status(400)
-            .send({ message: err.errors[0].message }))
+            .send({ message: dbError.errors[0].message }))
       }
     })
   })
@@ -103,6 +103,6 @@ module.exports = (app) => {
 
         return res.sendStatus(200)
       })
-      .catch(err => res.status(400).send(err))
+      .catch(error => res.status(400).send({ message: error }))
   })
 }
