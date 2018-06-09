@@ -1,8 +1,7 @@
 const { URL, Click } = require('../models')
-const cookieAgent = require('../lib/cookieAgent')
 
 module.exports = (redirector) => {
-  redirector.get('/:title', cookieAgent, (req, res) => {
+  redirector.get('/:title', (req, res) => {
     URL.findOne({
       where: {
         title: req.params.title
@@ -10,11 +9,10 @@ module.exports = (redirector) => {
     })
       .then(thisUrl =>
         Click.create({
-          userId: req.rtuid,
           URLId: thisUrl.id
         })
           .then(() => res.redirect(thisUrl.url))
-          .catch(() => res.sendStatus(500)))
+          .catch(error => res.status(500).send(error)))
       .catch(() => res.sendStatus(404))
   })
 }

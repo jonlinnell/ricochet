@@ -48,35 +48,6 @@ module.exports = (app) => {
       .catch(error => res.status(500).send({ message: error }))
   })
 
-  app.get(`${endpoint}/user/count`, (req, res) => {
-    Click.count({
-      distinct: true,
-      col: 'userId'
-    })
-      .then(count => res.json(count))
-      .catch(error => res.status(500).send({ message: error }))
-  })
-
-  app.get(`${endpoint}/user/:userId`, verifyToken, (req, res) => {
-    Click.findAll({
-      where: {
-        userId: req.params.userId
-      }
-    })
-      .then(clicks => res.json(clicks))
-      .catch(error => res.status(500).send({ message: error }))
-  })
-
-  app.get(`${endpoint}/user/count/:userId`, verifyToken, (req, res) => {
-    Click.count({
-      where: {
-        userId: req.params.userId
-      }
-    })
-      .then(count => res.json(count))
-      .catch(error => res.status(500).send({ message: error }))
-  })
-
   app.get(`${endpoint}/:id`, (req, res) => {
     Click.findOne({
       where: {

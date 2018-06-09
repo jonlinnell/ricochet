@@ -2,7 +2,6 @@
 require('dotenv').config()
 const bcrypt = require('bcryptjs')
 const bodyParser = require('body-parser')
-const cookieParser = require('cookie-parser')
 const cors = require('cors')
 const express = require('express')
 const fs = require('fs')
@@ -37,10 +36,7 @@ const accessLog = rfs('access.log', {
 app.use(bodyParser.json())
 app.use(cors())
 app.use(helmet())
-app.use(cookieParser())
 app.use(morgan('combined', { stream: accessLog }))
-
-redirector.use(cookieParser())
 
 console.log(`Launching in ${process.env.NODE_ENV || 'development'} mode.`.cyan)
 
