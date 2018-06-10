@@ -60,7 +60,7 @@ module.exports = (app) => {
       .catch(dbError => res.status(500).send({ message: `A server error occurred. ${dbError}` }))
   })
 
-  app.put(`${endpoint}/user/:username/password`, verifyToken, (req, res) => {
+  app.put(`${endpoint}/user/:id/password`, verifyToken, (req, res) => {
     Joi.validate(req.body, userUpdatePasswordSchema, (error) => {
       if (error !== null) {
         res
@@ -69,7 +69,7 @@ module.exports = (app) => {
       } else {
         User.findOne({
           where: {
-            username: req.params.username,
+            id: req.params.id,
             deleted: false
           }
         })
@@ -78,7 +78,7 @@ module.exports = (app) => {
               password: bcrypt.hashSync(req.body.password, 8)
             },
             {
-              where: { username: user.username }
+              where: { id: user.id }
             }
           )
             .then(() => res.sendStatus(200))
