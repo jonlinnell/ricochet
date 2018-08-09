@@ -31,6 +31,15 @@ module.exports = (app) => {
       })
   })
 
+  app.get(`${endpoint}/count`, verifyToken, (req, res) => {
+    URL.count({
+      where: {
+        deleted: false
+      }
+    })
+      .then(count => res.json({ count }))
+  })
+
   app.get(`${endpoint}/deleted`, verifyToken, (req, res) => {
     URL.findAll({
       where: {
