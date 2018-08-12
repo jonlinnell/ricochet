@@ -15,7 +15,7 @@ module.exports = (app) => {
 
   app.get(`${endpoint}/count`, (req, res) => {
     Click.count({})
-      .then(count => res.json(count))
+      .then(count => res.json({ count }))
       .catch(error => res.status(500).send({ message: error }))
   })
 
@@ -34,7 +34,7 @@ module.exports = (app) => {
         URLId: req.params.urlid
       }
     })
-      .then(count => res.json(count))
+      .then(count => res.json({ count }))
       .catch(error => res.status(500).send({ message: error }))
   })
 
