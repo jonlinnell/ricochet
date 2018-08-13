@@ -58,7 +58,7 @@ module.exports = (app) => {
           .status(400)
           .send({ message: error.details[0].message })
       } else {
-        URL.create(req.body)
+        URL.create(Object.assign({}, req.body, { createdBy: req.userId }))
           .then((url) => {
             res.json(url)
           })
@@ -83,7 +83,7 @@ module.exports = (app) => {
           .status(400)
           .send({ message: error.details[0].message })
       } else {
-        URL.update(req.body, {
+        URL.update(Object.assign({}, req.body, { lastModifiedBy: req.userId }), {
           where: {
             id: req.params.id
           }
@@ -103,7 +103,8 @@ module.exports = (app) => {
       .then((url) => {
         URL.update({
           title: `${url.title}_${sha256(`${url.title}${url.createdAt}`).substr(51, 6)}`,
-          deleted: true
+          deleted: true,
+          lastModifiedBy: req.userId
         }, {
           where: {
             id: req.params.id

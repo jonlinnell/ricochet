@@ -13,7 +13,13 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.BOOLEAN,
       defaultValue: false,
       allowNull: false
-    }
+    },
+    createdBy: {
+      type: DataTypes.SMALLINT,
+      defaultValue: 1,
+      allowNull: false
+    },
+    lastModifiedBy: DataTypes.SMALLINT
   })
 
   return URL
