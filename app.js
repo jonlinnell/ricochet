@@ -26,8 +26,6 @@ const {
   NODE_ENV,
   CREATE_DEFAULT_ADMIN,
   DEFAULTADMIN,
-  API_CERT,
-  API_KEY,
   CERT,
   KEY
 } = process.env
@@ -87,20 +85,15 @@ models.sequelize.sync().then(() => {
   require('./routes/redirects')(redirector)
 
   if (NODE_ENV === 'production') {
-    const apiOptions = {
-      cert: fs.readFileSync(API_CERT),
-      key: fs.readFileSync(API_KEY)
-    }
-
-    const redirectorOptions = {
+    const options = {
       cert: fs.readFileSync(CERT),
       key: fs.readFileSync(KEY)
     }
 
-    https.createServer(apiOptions, app).listen(apiPort)
+    https.createServer(options, app).listen(apiPort)
     console.log(`[${'API'.bold}] Service (https) started on ${apiPort}.`.green)
 
-    https.createServer(redirectorOptions, redirector).listen(port)
+    https.createServer(options, redirector).listen(port)
     console.log(`[${'WEB'.bold}] Service (https) started on ${port}.`.green)
   } else {
     http.createServer(app).listen(apiPort)
