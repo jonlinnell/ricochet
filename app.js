@@ -20,8 +20,20 @@ const { User } = require('./models')
 const redirector = express()
 const app = express()
 
-const apiPort = process.env.API_PORT || 9000
-const port = process.env.PORT || 3000
+const {
+  API_PORT,
+  PORT,
+  NODE_ENV,
+  CREATE_DEFAULT_ADMIN,
+  DEFAULTADMIN,
+  API_CERT,
+  API_KEY,
+  CERT,
+  KEY
+} = process.env
+
+const apiPort = API_PORT || 9000
+const port = PORT || 3000
 
 const logDir = path.join(__dirname, 'logs')
 if (!fs.existsSync(logDir)) {
@@ -38,7 +50,7 @@ app.use(cors())
 app.use(helmet())
 app.use(morgan('combined', { stream: accessLog }))
 
-console.log(`Launching in ${process.env.NODE_ENV || 'development'} mode.`.cyan)
+console.log(`Launching in ${NODE_ENV || 'development'} mode.`.cyan)
 
 /* Remember to filter fixed routes in the Joi schema */
 require('./routes/auth')(app)
@@ -48,14 +60,14 @@ require('./routes/url')(app)
 models.sequelize.sync().then(() => {
   console.log(`[${'DB'.bold}] Connection established.`.green)
 
-  if (process.env.CREATE_DEFAULT_ADMIN) {
+  if (CREATE_DEFAULT_ADMIN) {
     User.findOne({
       where: { username: 'admin' },
       attributes: { exclude: ['password'] }
     })
       .then((user) => {
         if (!user) {
-          const hashedPassword = bcrypt.hashSync(process.env.DEFAULTADMIN || 'not @ password', 8)
+          const hashedPassword = bcrypt.hashSync(DEFAULTADMIN || 'not @ password', 8)
 
           User.create({
             username: 'admin',
@@ -74,18 +86,27 @@ models.sequelize.sync().then(() => {
 
   require('./routes/redirects')(redirector)
 
-  if (process.env.NODE_ENV === 'production') {
-    const options = {
-      cert: fs.readFileSync(process.env.SSL_CERT),
-      key: fs.readFileSync(process.env.SSL_KEY)
+  if (NODE_ENV === 'production') {
+    const apiOptions = {
+      cert: fs.readFileSync(API_CERT),
+      key: fs.readFileSync(API_KEY)
     }
-    https.createServer(options, app).listen(apiPort)
+
+    const redirectorOptions = {
+      cert: fs.readFileSync(CERT),
+      key: fs.readFileSync(KEY)
+    }
+
+    https.createServer(apiOptions, app).listen(apiPort)
     console.log(`[${'API'.bold}] Service (https) started on ${apiPort}.`.green)
+
+    https.createServer(redirectorOptions, redirector).listen(port)
+    console.log(`[${'WEB'.bold}] Service (https) started on ${port}.`.green)
   } else {
     http.createServer(app).listen(apiPort)
     console.log(`[${'API'.bold}] Service (http) started on ${apiPort}.`.green)
-  }
 
-  http.createServer(redirector).listen(port)
-  console.log(`[${'WEB'.bold}] Service started on ${port}.`.green)
+    http.createServer(redirector).listen(port)
+    console.log(`[${'WEB'.bold}] Service (http) started on ${port}.`.green)
+  }
 })
