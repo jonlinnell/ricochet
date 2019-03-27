@@ -1,0 +1,33 @@
+@import '../../styles/custom.scss';
+
+.link-action {
+  padding: 2px 4px;
+  background-color: #f1f1f1;
+  border: none;
+  border-radius: 4px;
+}
+
+.link-action:hover {
+  background-color: #ddd;
+}
+
+.click-count {
+  font-size: 0.8rem;
+}
+
+.fa-info {
+  color: rgb(170, 170, 170);
+}
+
+.text-title {
+  font-size: 1.1rem;
+}
+
+.text-url {
+  color: $primary;
+  font-size: 1.1rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: right;
+}

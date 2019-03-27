@@ -1,0 +1,34 @@
+{
+  "notifications": [],
+  "clicks": {
+    "data": [],
+    "total": 0
+  },
+  "fetching": false,
+  "urls": {
+    "activeUpdate": {
+      "add": null,
+      "modify": {
+        "id": null
+      },
+      "remove": {
+        "id": null
+      }
+    },
+    "data": [],
+    "filter": null,
+    "total": 0
+  },
+  "users": {
+    "activeUpdate": {
+      "add": null,
+      "modify": {
+        "id": null
+      },
+      "remove": {
+        "username": null
+      }
+    },
+    "data": []
+  }
+}

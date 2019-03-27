@@ -1,0 +1,25 @@
+/* Navbar styles */
+
+nav {
+  border-bottom: 1px solid rgba(0,0,0,0.125);
+  color: #fff;
+}
+
+.nav-bg {
+  background-color: #005E82;
+}
+
+.navbar-brand {
+  font-family: 'Lato', sans-serif;
+  font-size: 2rem !important;
+}
+
+.nav-link {
+  color: #d3d3d3 !important;
+  font-size: 0.9rem;
+}
+
+.nav-active {
+  color: #fff !important;
+  font-size: 0.9rem;
+}

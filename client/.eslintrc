@@ -1,0 +1,14 @@
+{
+  "parser": "babel-eslint",
+  "extends": [
+    "react-app",
+    "airbnb"
+  ],
+  "rules": {
+    "import/no-named-default": "off",
+    "import/no-unresolved": "off",
+    "import/extensions": "off",
+    "no-unused-expressions": ["error", {"allowTernary": true}],
+    "semi": [2, "never"]
+  }
+}

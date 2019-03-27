@@ -1,0 +1,13 @@
+@import "./custom.scss";
+@import "~bootstrap/scss/bootstrap";
+
+body {
+  /* background-color: #e4e5e6; */
+  background-color: #fff;
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 300;
+}
+
+.link-action {
+  font-size: 0.8rem;
+}

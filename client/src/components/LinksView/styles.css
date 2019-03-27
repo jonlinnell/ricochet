@@ -1,0 +1,12 @@
+.input-filter {
+  border-radius: 6px;
+  font-size: 0.8rem;
+}
+
+li:first-child {
+  border-top: none;
+}
+
+li:last-of-type {
+  border-bottom: none;
+}
