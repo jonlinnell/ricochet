@@ -3,13 +3,13 @@ import FontAwesomeIcon from '@fortawesome/react-fontawesome'
 import { faMousePointer, faCalendar } from '@fortawesome/fontawesome-free-solid'
 import moment from 'moment-timezone'
 
-moment.tz('Europe/London')
-
 import InlineLinkFormUpdate from '../InlineLinkFormUpdate'
 
 import { linkRecordPropTypes } from '../../lib/propsValidation'
 
 import './styles.scss'
+
+moment.tz('Europe/London')
 
 const secondaryActionClasses = ['text-secondary', 'font-weight-light']
 const linkActionClasses = [...secondaryActionClasses, 'link-action', 'ml-2']
