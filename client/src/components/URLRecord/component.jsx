@@ -3,8 +3,6 @@ import FontAwesomeIcon from '@fortawesome/react-fontawesome'
 import { faMousePointer, faCalendar } from '@fortawesome/fontawesome-free-solid'
 import moment from 'moment-timezone'
 
-moment.tz('Europe/London')
-
 import InlineLinkFormUpdate from '../InlineLinkFormUpdate'
 
 import { linkRecordPropTypes } from '../../lib/propsValidation'
