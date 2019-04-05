@@ -17,6 +17,11 @@ require('colors')
 const models = require('./models')
 const { User } = require('./models')
 
+const routeAuth = require('./routes/auth')
+const routeClicks = require('./routes/clicks')
+const routeRedirects = require('./routes/redirects')
+const routeUrl = require('./routes/url')
+
 const redirector = express()
 const app = express()
 
@@ -41,9 +46,11 @@ app.use(morgan('combined', { stream: accessLog }))
 console.log(`Launching in ${process.env.NODE_ENV || 'development'} mode.`.cyan)
 
 /* Remember to filter fixed routes in the Joi schema */
-require('./routes/auth')(app)
-require('./routes/clicks')(app)
-require('./routes/url')(app)
+app.use('/auth', routeAuth)
+app.use('/clicks', routeClicks)
+app.use('/url', routeUrl)
+
+app.get('/favicon.ico', (req, res) => res.send(204))
 
 models.sequelize.sync().then(() => {
   console.log(`[${'DB'.bold}] Connection established.`.green)
@@ -55,7 +62,7 @@ models.sequelize.sync().then(() => {
     })
       .then((user) => {
         if (!user) {
-          const hashedPassword = bcrypt.hashSync(process.env.DEFAULTADMIN || 'not @ password', 8)
+          const hashedPassword = bcrypt.hashSync(process.env.DEFAULT_ADMIN_PASSWORD || 'not @ password', 8)
 
           User.create({
             username: 'admin',
@@ -72,7 +79,7 @@ models.sequelize.sync().then(() => {
     res.status(200).json({ message: 'Hello there!' })
   })
 
-  require('./routes/redirects')(redirector)
+  redirector.use('/', routeRedirects)
 
   if (process.env.NODE_ENV === 'production') {
     const options = {
