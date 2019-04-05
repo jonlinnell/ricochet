@@ -10,14 +10,7 @@ const {
   DB_PASS,
   DB_URL,
   DB_NAME
-} = process.env;
-
-['DB_DIALECT', 'DB_USER', 'DB_URL', 'DB_NAME']
-  .forEach((key) => {
-    if (!Object.keys(process.env).includes(key)) {
-      throw new Error(`Required environment variable \`${key}\` is not defined. Define it before proceeding.)`)
-    }
-  })
+} = process.env
 
 const db = {}
 const sequelize = new Sequelize(`${DB_DIALECT}://${DB_USER}${DB_PASS ? `:${DB_PASS}` : ''}@${DB_URL}/${DB_NAME}`, {

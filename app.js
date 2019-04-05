@@ -24,8 +24,10 @@ const routeUrl = require('./routes/url')
 
 const app = express()
 
+require('./lib/ensureConfiguration')() // Check configuration before continuing
+
 const {
-  NODE_ENV, PORT, CREATE_DEFAULT_ADMIN, DEFAULT_ADMIN_PASSWORD, SSL_CERT, SSL_KEY
+  NODE_ENV = 'development', PORT = 3000, DEFAULT_ADMIN_PASSWORD, SSL_CERT, SSL_KEY
 } = process.env
 
 const logDir = path.join(__dirname, 'logs')
@@ -43,7 +45,7 @@ app.use(cors())
 app.use(helmet())
 app.use(morgan('combined', { stream: accessLog }))
 
-console.log(`Launching in ${NODE_ENV || 'development'} mode.`.cyan)
+console.log(`[info] Launching in ${NODE_ENV} mode.`.cyan)
 
 /* Remember to filter fixed routes in the Joi schema */
 app.use('/auth', routeAuth)
@@ -55,27 +57,25 @@ app.get('/favicon.ico', (req, res) => res.send(204))
 app.use('/', routeRedirects)
 
 models.sequelize.sync().then(() => {
-  console.log(`[${'DB'.bold}] Connection established.`.green)
+  console.log('[info] Database connection established.'.green)
 
-  if (CREATE_DEFAULT_ADMIN) {
-    User.findOne({
-      where: { username: 'admin' },
-      attributes: { exclude: ['password'] }
-    })
-      .then((user) => {
-        if (!user) {
-          const hashedPassword = bcrypt.hashSync(DEFAULT_ADMIN_PASSWORD || 'not @ password', 8)
+  User.findOne({
+    where: { username: 'admin' },
+    attributes: { exclude: ['password'] }
+  })
+    .then((user) => {
+      if (!user) {
+        const hashedPassword = bcrypt.hashSync(DEFAULT_ADMIN_PASSWORD, 8)
 
-          User.create({
-            username: 'admin',
-            password: hashedPassword
+        User.create({
+          username: 'admin',
+          password: hashedPassword
+        })
+          .then(() => {
+            console.log('[info] Default admin account doesn\'t exist. Creating it.'.yellow)
           })
-            .then(() => {
-              console.log('Default admin account doesn\'t exist. Creating it.'.yellow)
-            })
-        }
-      })
-  }
+      }
+    })
 
   if (NODE_ENV === 'production') {
     const options = {
@@ -83,9 +83,9 @@ models.sequelize.sync().then(() => {
       key: fs.readFileSync(SSL_KEY)
     }
     https.createServer(options, app).listen(PORT)
-    console.log(`Service (https) started on ${PORT}.`.green)
+    console.log(`[info] Service (https) started on ${PORT}.`.green)
   } else {
     http.createServer(app).listen(PORT)
-    console.log(`Service (http) started on ${PORT}.`.green)
+    console.log(`[info] Service (http) started on ${PORT}.`.green)
   }
 })
