@@ -14,6 +14,8 @@ const rfs = require('rotating-file-stream')
 
 require('colors')
 
+require('./lib/ensureConfiguration')() // Check configuration before continuing
+
 const models = require('./models')
 const { User } = require('./models')
 
@@ -23,8 +25,6 @@ const routeRedirects = require('./routes/redirects')
 const routeUrl = require('./routes/url')
 
 const app = express()
-
-require('./lib/ensureConfiguration')() // Check configuration before continuing
 
 const {
   NODE_ENV = 'development', PORT = 3000, DEFAULT_ADMIN_PASSWORD, SSL_CERT, SSL_KEY
