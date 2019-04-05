@@ -34,6 +34,7 @@ const LinkRecord = (props) => {
           href={url}
           title={url}
           target="_blank"
+          rel="noopener noreferrer"
         >
           {url}
         </a>
