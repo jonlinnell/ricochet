@@ -1,10 +1,11 @@
 import React from 'react'
 import FontAwesomeIcon from '@fortawesome/react-fontawesome'
 import { faMousePointer, faCalendar } from '@fortawesome/fontawesome-free-solid'
+import moment from 'moment-timezone'
+
+moment.tz('Europe/London')
 
 import InlineLinkFormUpdate from '../InlineLinkFormUpdate'
-
-import { formatDate } from '../../lib/dates'
 
 import { linkRecordPropTypes } from '../../lib/propsValidation'
 
@@ -40,7 +41,7 @@ const LinkRecord = (props) => {
       <div className="row d-flex align-items-center justify-content-end mt-2">
         <div className={[...secondaryActionClasses, 'm-0', 'mr-auto', 'click-count'].join(' ')}>
           {clicks ? <span className="mr-3"><FontAwesomeIcon className="mr-0 fa-info" icon={faMousePointer} /> {clicks}</span> : null}
-          <span><FontAwesomeIcon className="mr-1 fa-info" icon={faCalendar} />{formatDate(createdAt)}</span>
+          <span><FontAwesomeIcon className="mr-1 fa-info" icon={faCalendar} />{moment(createdAt).format('LLL')}</span>
         </div>
         <button
           className={linkActionClasses.join(' ')}
