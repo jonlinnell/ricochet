@@ -3,23 +3,27 @@ const fs = require('fs')
 const path = require('path')
 const Sequelize = require('sequelize')
 
-const env = process.env.NODE_ENV || 'development'
+const {
+  NODE_ENV,
+  DB_DIALECT,
+  DB_USER,
+  DB_PASS,
+  DB_URL,
+  DB_NAME
+} = process.env;
 
-const config = require(path.join(__dirname, '..', 'config', 'db.js'))[env]
+['DB_DIALECT', 'DB_USER', 'DB_URL', 'DB_NAME']
+  .forEach((key) => {
+    if (!Object.keys(process.env).includes(key)) {
+      throw new Error(`Required environment variable \`${key}\` is not defined. Define it before proceeding.)`)
+    }
+  })
 
 const db = {}
-var sequelize = {}
-
-if (process.env.DATABASE_URL) {
-  sequelize = new Sequelize(process.env.DATABASE_URL, config)
-} else {
-  sequelize = new Sequelize(
-    config.database,
-    config.username,
-    config.password,
-    config,
-  )
-}
+const sequelize = new Sequelize(`${DB_DIALECT}://${DB_USER}${DB_PASS ? `:${DB_PASS}` : ''}@${DB_URL}/${DB_NAME}`, {
+  logging: NODE_ENV === 'production' ? false : console.log,
+  operatorsAliases: Sequelize.Op
+})
 
 fs
   .readdirSync(__dirname)
