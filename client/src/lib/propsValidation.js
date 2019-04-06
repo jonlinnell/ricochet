@@ -89,7 +89,7 @@ export const loginFormPropTypes = {
   handleSubmit: propTypes.func,
   auth: propTypes.shape({
     isAuthenticated: propTypes.bool,
-    error: propTypes.string,
+    error: propTypes.object,
   }),
 }
 
