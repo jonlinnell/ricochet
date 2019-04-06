@@ -2,13 +2,9 @@ import React from 'react'
 
 import './styles.css'
 
-import { spinnerPropTypes } from '../../lib/propsValidation'
-
-const Spinner = props =>
-  (props.enabled
+const Spinner = ({ enabled }) =>
+  (enabled
     ? <div className="loader" />
     : <div className="blank" />)
-
-Spinner.propTypes = spinnerPropTypes
 
 export default Spinner

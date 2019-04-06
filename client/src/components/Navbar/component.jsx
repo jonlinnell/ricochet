@@ -12,11 +12,9 @@ import {
 
 import Hamburger from '../Hamburger'
 
-import { navbarPropTypes, navbarDefaultProps } from '../../lib/propsValidation'
-
 import './styles.css'
 
-const Navbar = (props) => {
+const Navbar = ({ onLogout, auth }) => {
   const navbarItemsAuthenticated = [
     <li key="links">
       <NavLink className="nav-link" activeClassName="nav-active" to="/links">
@@ -37,9 +35,9 @@ const Navbar = (props) => {
       </NavLink>
     </li>,
     <li key="onLogout">
-      <a className="nav-link" href="#logout" onClick={() => props.onLogout()}>
+      <a className="nav-link" href="#logout" onClick={() => onLogout()}>
         <FontAwesomeIcon icon={faSignOut} className="mr-2" />
-        Logout ({props.auth.user})
+        Logout ({ auth.user })
       </a>
     </li>,
   ]
@@ -65,7 +63,7 @@ const Navbar = (props) => {
           <Hamburger />
           <div className="collapse navbar-collapse" id="navbar">
             <ul className="navbar-nav justify-content-end ml-auto" role="group" aria-label="Navigation">
-              {props.auth.isAuthenticated
+              {auth.isAuthenticated
                 ? navbarItemsAuthenticated
                 : navbarItemsUnauthenticated}
             </ul>
@@ -76,8 +74,7 @@ const Navbar = (props) => {
   )
 }
 
-Navbar.propTypes = navbarPropTypes
-Navbar.defaultProps = navbarDefaultProps
+Navbar.defaultProps = { auth: { user: null, isAuthenticated: false } }
 
 export default Navbar
 

@@ -8,6 +8,7 @@
     "import/no-named-default": "off",
     "import/no-unresolved": "off",
     "import/extensions": "off",
+    "react/prop-types": "warn",
     "no-unused-expressions": ["error", {"allowTernary": true}],
     "semi": [2, "never"]
   }

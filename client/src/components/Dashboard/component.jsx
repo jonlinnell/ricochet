@@ -1,5 +1,4 @@
 import React, { PureComponent } from 'react'
-import propTypes from 'prop-types'
 import styled from 'styled-components'
 
 import Guage from '../Guage'
@@ -30,13 +29,6 @@ class Dashboard extends PureComponent {
       </DashboardWrapper>
     )
   }
-}
-
-Dashboard.propTypes = {
-  clicks: propTypes.number.isRequired,
-  urls: propTypes.number.isRequired,
-  loadURLCount: propTypes.func.isRequired,
-  loadClickCount: propTypes.func.isRequired,
 }
 
 export default Dashboard

@@ -11,8 +11,6 @@ import URLRecord from '../URLRecord'
 import InlineLinkFormAdd from '../InlineLinkFormAdd'
 import ModalConfirmDeleteURL from '../ModalConfirmDeleteURL'
 
-import { linksViewPropTypes, linksViewDefaultProps } from '../../lib/propsValidation.js'
-
 import './styles.css'
 
 const URLRecordAnimationWrapper = posed.div({
@@ -82,8 +80,6 @@ class LinksView extends Component {
   }
 }
 
-LinksView.propTypes = linksViewPropTypes
-
-LinksView.defaultProps = linksViewDefaultProps
+LinksView.defaultProps = { allURLs: [] }
 
 export default LinksView

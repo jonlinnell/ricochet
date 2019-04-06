@@ -1,5 +1,4 @@
 import React from 'react'
-import propTypes from 'prop-types'
 import posed, { PoseGroup } from 'react-pose'
 import styled from 'styled-components'
 
@@ -20,11 +19,11 @@ const AnimatedNotification = posed.div({
   },
 })
 
-const Notifications = props => (
+const Notifications = ({ notifications }) => (
   <NotificationsWrapper>
     <PoseGroup>
       {
-        props.notifications.map(notification => (
+        notifications.map(notification => (
           <AnimatedNotification key={notification.index}>
             <Notification notification={notification} />
           </AnimatedNotification>
@@ -33,10 +32,6 @@ const Notifications = props => (
     </PoseGroup>
   </NotificationsWrapper>
 )
-
-Notifications.propTypes = {
-  notifications: propTypes.arrayOf(propTypes.object),
-}
 
 Notifications.defaultProps = {
   notifications: [],

@@ -1,62 +1,51 @@
 import React, { Component } from 'react'
 import { Field, reduxForm } from 'redux-form'
 
-import {
-  inlineLinkFormDefaultProps,
-  inlineLinkFormPropTypes,
-  linkFormPropTypes,
-  linkFromDefaultProps,
-} from '../../lib/propsValidation'
-
-let LinkForm = (props) => {
-  const {
-    handleSubmit,
-    onCancel,
-    pristine,
-    submitting,
-  } = props
-
-  return (
-    <form className="list-group-item form-inline" onSubmit={handleSubmit}>
-      <div className="row">
-        <Field className="form-control" component="input" type="hidden" name="id" />
-        <div className="form-row w-100">
-          <Field
-            className="form-control col-sm-4 p-1 text-title"
-            component="input"
-            type="text"
-            name="title"
-            placeholder="Link name"
-          />
-          <Field
-            className="form-control col-sm-8 p-1"
-            component="input"
-            type="text"
-            name="url"
-            placeholder="URL"
-          />
-        </div>
+let LinkForm = ({
+  handleSubmit,
+  onCancel,
+  pristine,
+  submitting,
+}) => (
+  <form className="list-group-item form-inline" onSubmit={handleSubmit}>
+    <div className="row">
+      <Field className="form-control" component="input" type="hidden" name="id" />
+      <div className="form-row w-100">
+        <Field
+          className="form-control col-sm-4 p-1 text-title"
+          component="input"
+          type="text"
+          name="title"
+          placeholder="Link name"
+        />
+        <Field
+          className="form-control col-sm-8 p-1"
+          component="input"
+          type="text"
+          name="url"
+          placeholder="URL"
+        />
       </div>
-      <div className="m-0 d-flex mt-2 justify-content-end">
-        <button
-          type="submit"
-          className="btn btn-sm btn-primary"
-          disabled={pristine || submitting}
-        >
-          Save
-        </button>
-        <button
-          type="button"
-          className="btn btn-sm btn-light"
-          onClick={onCancel}
-          disabled={submitting}
-        >
-          Cancel
-        </button>
-      </div>
-    </form>
-  )
-}
+    </div>
+    <div className="m-0 d-flex mt-2 justify-content-end">
+      <button
+        type="submit"
+        className="btn btn-sm btn-primary"
+        disabled={pristine || submitting}
+      >
+        Save
+      </button>
+      <button
+        type="button"
+        className="btn btn-sm btn-light"
+        onClick={onCancel}
+        disabled={submitting}
+      >
+        Cancel
+      </button>
+    </div>
+  </form>
+)
 
 LinkForm = reduxForm({
   form: 'link',
@@ -88,10 +77,5 @@ class InlineLinkForm extends Component {
     )
   }
 }
-
-InlineLinkForm.defaultProps = inlineLinkFormDefaultProps
-InlineLinkForm.propTypes = inlineLinkFormPropTypes
-LinkForm.propTypes = linkFormPropTypes
-LinkForm.defaultProps = linkFromDefaultProps
 
 export default InlineLinkForm

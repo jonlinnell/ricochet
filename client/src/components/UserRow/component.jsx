@@ -7,8 +7,6 @@ import {
   faEdit,
 } from '@fortawesome/fontawesome-free-solid'
 
-import { userRowPropTypes } from '../../lib/propsValidation'
-
 const formatDate = (dateString) => {
   const date = new Date(dateString)
   return `${leftPad(date.getDate(), 2, '0')}-${leftPad(date.getMonth(), 2, '0')}-${date.getFullYear()}, ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`
@@ -49,7 +47,5 @@ const UserRow = (props) => {
     </tr>
   )
 }
-
-UserRow.propTypes = userRowPropTypes
 
 export default UserRow

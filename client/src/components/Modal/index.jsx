@@ -1,5 +1,4 @@
 import React from 'react'
-import propTypes from 'prop-types'
 
 const Modal = ({ id, label, children }) => (
   <div className="modal fade" id={id} tabIndex="-1" role="dialog">
@@ -16,14 +15,5 @@ const Modal = ({ id, label, children }) => (
     </div>
   </div>
 )
-
-Modal.propTypes = {
-  label: propTypes.string.isRequired,
-  id: propTypes.string.isRequired,
-  children: propTypes.oneOfType([
-    propTypes.object,
-    propTypes.array,
-  ]).isRequired,
-}
 
 export default Modal

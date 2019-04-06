@@ -5,8 +5,6 @@ import moment from 'moment-timezone'
 
 import InlineLinkFormUpdate from '../InlineLinkFormUpdate'
 
-import { linkRecordPropTypes } from '../../lib/propsValidation'
-
 import './styles.scss'
 
 moment.tz('Europe/London')
@@ -14,16 +12,21 @@ moment.tz('Europe/London')
 const secondaryActionClasses = ['text-secondary', 'font-weight-light']
 const linkActionClasses = [...secondaryActionClasses, 'link-action', 'ml-2']
 
-const LinkRecord = (props) => {
+const LinkRecord = ({
+  modify,
+  onSetModifyURL,
+  onSelectDeleteURL,
+  ...rest
+}) => {
   const {
     id,
     title,
     url,
     clicks,
     createdAt,
-  } = props.url
+  } = rest.url
 
-  return props.modify.id === id
+  return modify.id === id
     ? <InlineLinkFormUpdate />
     :
     <li className="list-group-item">
@@ -46,7 +49,7 @@ const LinkRecord = (props) => {
         </div>
         <button
           className={linkActionClasses.join(' ')}
-          onClick={() => props.onSetModifyURL(id)}
+          onClick={() => onSetModifyURL(id)}
           tabIndex={0}
         >
             Modify
@@ -59,7 +62,7 @@ const LinkRecord = (props) => {
         </button>
         <button
           className={linkActionClasses.join(' ')}
-          onClick={() => props.onSelectDeleteURL(id)}
+          onClick={() => onSelectDeleteURL(id)}
           data-toggle="modal"
           data-target="#confirmDeleteURL"
           tabIndex={-1}
@@ -69,7 +72,5 @@ const LinkRecord = (props) => {
       </div>
     </li>
 }
-
-LinkRecord.propTypes = linkRecordPropTypes
 
 export default LinkRecord
