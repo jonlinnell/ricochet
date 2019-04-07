@@ -1,6 +1,15 @@
 @import "./custom.scss";
 @import "~bootstrap/scss/bootstrap";
 
+html {
+  font-size: 12pt;
+  box-sizing: border-box;
+}
+
+*, *:after, *:before {
+  box-sizing: inherit;
+}
+
 body {
   /* background-color: #e4e5e6; */
   background-color: #fff;
