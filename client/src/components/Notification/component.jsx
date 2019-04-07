@@ -1,16 +1,18 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import styled from 'styled-components'
 import FontAwesomeIcon from '@fortawesome/react-fontawesome'
 import { faTimes } from '@fortawesome/fontawesome-free-solid'
 
+
 const Message = styled.p`
   margin: auto;
+  font-size: 0.8rem;
   color: rgb(80, 80, 80);
-`
+  `
 
 const NotificationWrapper = styled.div`
   display: flex;
-  padding: 0.8rem;
+  padding: 0.5rem;
   background-color: ${({ type }) => (
     type === 'ERROR'
       ? 'rgb(226, 172, 172)'
@@ -18,23 +20,27 @@ const NotificationWrapper = styled.div`
   )};
 `
 
-const Notification = ({ notification: { type, message, index }, clearNotification }) => {
-  if (type === 'SUCCESS') {
-    setTimeout(() => clearNotification(index), 5000)
-  }
+const Icon = styled.span`
+  margin-left: 12px;
+  `
+
+export default ({ notification: { type, message, index }, clearNotification }) => {
+  useEffect(() => {
+    if (type === 'SUCCESS') {
+      setTimeout(() => clearNotification(index), 5000)
+    }
+  }, [])
 
   return (
     <NotificationWrapper type={type}>
       <Message>{message}</Message>
-      <span>
+      <Icon>
         <FontAwesomeIcon
           icon={faTimes}
           color="rgb(80, 80, 80)"
           onClick={() => clearNotification(index)}
         />
-      </span>
+      </Icon>
     </NotificationWrapper>
   )
 }
-
-export default Notification
