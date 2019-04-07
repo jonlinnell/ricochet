@@ -1,23 +1,47 @@
-import React from 'react'
-import styled from 'styled-components'
+import React, { useState } from 'react'
+import Snackbar from '@material-ui/core/Snackbar'
+import Fade from '@material-ui/core/Fade'
+import green from '@material-ui/core/colors/green'
+import red from '@material-ui/core/colors/red'
 
-import Notification from '../Notification'
+const colours = {
+  SUCCESS: { backgroundColor: green[400] },
+  ERROR: { backgroundColor: red[400] },
+}
 
-const NotificationsWrapper = styled.div`
-  max-width: 40vw;
-  position: absolute;
-  bottom: 12px;
-  left: 12px;
-  z-index: 2;
-`
+const Notifications = ({ notifications = [], clearNotification }) => {
+  const [open, setOpen] = useState(true)
 
-const Notifications = ({ notifications = [] }) => (
-  <NotificationsWrapper>
-    {
-      notifications.map(notification =>
-        <Notification notification={notification} key={notification.index} />)
-    }
-  </NotificationsWrapper>
-)
+  const handleClose = (index) => {
+    setOpen(false)
+    setTimeout(() => {
+      clearNotification(index)
+      setOpen(true)
+    }, 1000)
+  }
+
+  return (
+    <React.Fragment>
+      {
+        notifications.map(({ message, type, index }) => (
+          <Snackbar
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'left',
+            }}
+            autoHideDuration={5000}
+            ContentProps={{ style: colours[type] }}
+            index={index}
+            key={index}
+            message={message}
+            onClose={() => handleClose(index)}
+            open={open}
+            TransitionComponent={Fade}
+          />
+        ))
+      }
+    </React.Fragment>
+  )
+}
 
 export default Notifications
