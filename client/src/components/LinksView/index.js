@@ -15,7 +15,6 @@ const mapStateToProps = state => ({
   allURLs: state.urls.data,
   filter: state.urls.filter,
   activeUpdate: state.urls.activeUpdate,
-  fetching: state.fetching,
 })
 
 const mapDispatchToProps = dispatch => ({

@@ -5,8 +5,6 @@ import { faPlus } from '@fortawesome/fontawesome-free-solid'
 
 import posed, { PoseGroup } from 'react-pose'
 
-import Spinner from '../Spinner'
-
 import URLRecord from '../URLRecord'
 import InlineLinkFormAdd from '../InlineLinkFormAdd'
 import ModalConfirmDeleteURL from '../ModalConfirmDeleteURL'
@@ -33,7 +31,6 @@ class LinksView extends Component {
     const {
       activeUpdate,
       allURLs,
-      fetching,
       filter,
       handleSetFilter,
       onSetAddingURL,
@@ -52,7 +49,6 @@ class LinksView extends Component {
             <FontAwesomeIcon icon={faPlus} />
           </button>
         </div>
-        <Spinner enabled={fetching} />
         <input
           name="filter"
           ref={input => filterInput = input} // eslint-disable-line no-return-assign

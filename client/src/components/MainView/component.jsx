@@ -3,6 +3,7 @@ import { Route, Router } from 'react-router-dom'
 import { LinkContainer } from 'react-router-bootstrap'
 import FontAwesomeIcon from '@fortawesome/react-fontawesome'
 import { faSignInAlt } from '@fortawesome/fontawesome-free-solid'
+import LinearProgress from '@material-ui/core/LinearProgress'
 
 import PrivateRoute from '../PrivateRoute'
 
@@ -28,10 +29,15 @@ const DefaultHome = () => (
   </div>
 )
 
-const MainView = ({ auth }) => (
+const MainView = ({ auth, fetching }) => (
   <Router history={history}>
     <div>
       <Navbar />
+      {
+        fetching
+          ? <LinearProgress variant="indeterminate" />
+          : <div style={{ height: '4px' }} />
+      }
       <Notifications />
 
       <div className="container-fluid">
